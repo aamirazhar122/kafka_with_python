@@ -4,6 +4,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 import logging
+from app import players_pb2
 
 logging.basicConfig(level=logging.INFO)
 
@@ -53,6 +54,14 @@ def read_root():
 @app.post("/register-player")
 async def register_new_player(player_data: GamePlayersRegistration):
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BROKER)
+    
+
+
+    players_proto=players_pb2.GamerPlayers(player_name=player_data.player_name, age=player_data.age,email=player_data.email,phone_number=player_data.phone_number)
+    serialized = players_proto.SerializeToString()
+    print(f"Serialized:",serialized)
+
+    
 
     await producer.start()
 
